@@ -1,8 +1,8 @@
 %global module pyasn1
-%global modules_version 0.4.1
+%global modules_version 0.4.2
 
 Name:           python-pyasn1
-Version:        0.6.1
+Version:        0.6.2
 Release:        1%{?dist}
 Summary:        ASN.1 tools for Python
 License:        BSD-2-Clause
@@ -86,6 +86,11 @@ popd
 %doc docs/build/html/*
 
 %changelog
+* Wed Feb 11 2026 Florence Blanc-Renaud <flo@redhat.com> - 0.6.2-1
+- Update to 0.6.2
+- Update modules to 0.4.2
+  Resolves: RHEL-148142
+
 * Fri Nov 15 2024 Simon Pichugin <spichugi@redhat.com> - 0.6.1-1
 - Update to 0.6.1
 - Update modules to 0.4.1
