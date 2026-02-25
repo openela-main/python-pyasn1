@@ -3,13 +3,16 @@
 
 Name:           python-pyasn1
 Version:        0.4.8
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        ASN.1 tools for Python
 License:        BSD
 Source0:        https://github.com/etingof/pyasn1/archive/v%{version}.tar.gz
 Source1:        https://github.com/etingof/pyasn1-modules/archive/v%{modules_version}.tar.gz
 URL:            http://pyasn1.sourceforge.net/
 BuildArch:      noarch
+
+Patch1:         0001-Backport-commit-be353d7.patch
+
 
 %description
 This is an implementation of ASN.1 types and codecs in the Python programming
@@ -44,6 +47,7 @@ BuildRequires:  python3-sphinx
 
 %prep
 %setup -n %{module}-%{version} -q -b1
+%autopatch -p1
 
 
 %build
@@ -85,6 +89,9 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} setup.py test
 %doc docs/build/html/*
 
 %changelog
+* Fri Feb 13 2026 Florence Blanc-Renaud <flo@redhat.com> - 0.4.8-7
+- Resolves: RHEL-148154
+
 * Tue Aug 10 2021 Mohan Boddu <mboddu@redhat.com> - 0.4.8-6
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688
