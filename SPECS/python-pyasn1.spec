@@ -3,7 +3,7 @@
 
 Name:           python-pyasn1
 Version:        0.3.7
-Release:        6%{?dist}
+Release:        6%{?dist}.1
 Summary:        ASN.1 tools for Python
 License:        BSD
 Group:          System Environment/Libraries
@@ -11,6 +11,9 @@ Source0:        https://github.com/etingof/pyasn1/archive/v%{version}.tar.gz
 Source1:        https://github.com/etingof/pyasn1-modules/archive/v%{modules_version}.tar.gz
 URL:            http://pyasn1.sourceforge.net/
 BuildArch:      noarch
+
+Patch1:         0001-Backport-commit-be353d7.patch
+
 
 %description
 This is an implementation of ASN.1 types and codecs in the Python programming
@@ -44,6 +47,7 @@ BuildRequires:  python3-sphinx
 
 %prep
 %setup -n %{module}-%{version} -q -b1
+%autopatch -p1
 
 
 %build
@@ -85,6 +89,9 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} setup.py test
 %doc doc/build/html/*
 
 %changelog
+* Wed Feb 18 2026 Masahiro Matsuya <mmatsuya@redhat.com> - 0.3.7-6.el8_10.1
+- Resolves: RHEL-148145
+
 * Mon Jul 09 2018 Petr Viktorin <pviktori@redhat.com> - 0.3.7-6
 - Remove the python2 subpackage
 
