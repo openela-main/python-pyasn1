@@ -3,7 +3,7 @@
 
 Name:           python-pyasn1
 Version:        0.4.8
-Release:        7%{?dist}
+Release:        7%{?dist}.1
 Summary:        ASN.1 tools for Python
 License:        BSD
 Source0:        https://github.com/etingof/pyasn1/archive/v%{version}.tar.gz
@@ -12,6 +12,8 @@ URL:            http://pyasn1.sourceforge.net/
 BuildArch:      noarch
 
 Patch1:         0001-Backport-commit-be353d7.patch
+# https://github.com/pyasn1/pyasn1/commit/e60c691cb91addb8fcefa2f537e85ede6fb1e886
+Patch2:         python-pyasn1-0.4.8-CVE-2026-59886.patch
 
 
 %description
@@ -89,6 +91,10 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} setup.py test
 %doc docs/build/html/*
 
 %changelog
+* Wed Jul 29 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 0.4.8-7.1
+- Fix CVE-2026-59886: prevent overflow in Real type float conversion
+- Resolves: RHEL-217915
+
 * Fri Feb 13 2026 Florence Blanc-Renaud <flo@redhat.com> - 0.4.8-7
 - Resolves: RHEL-148154
 
