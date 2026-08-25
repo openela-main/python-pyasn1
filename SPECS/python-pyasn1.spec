@@ -3,7 +3,7 @@
 
 Name:           python-pyasn1
 Version:        0.3.7
-Release:        6%{?dist}.1
+Release:        6%{?dist}.2
 Summary:        ASN.1 tools for Python
 License:        BSD
 Group:          System Environment/Libraries
@@ -13,6 +13,8 @@ URL:            http://pyasn1.sourceforge.net/
 BuildArch:      noarch
 
 Patch1:         0001-Backport-commit-be353d7.patch
+# https://github.com/pyasn1/pyasn1/commit/90d5e1723913d756c23709bb90feb6f9e8bf585f
+Patch2:         python-pyasn1-0.3.7-CVE-2026-59886.patch
 
 
 %description
@@ -89,6 +91,11 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} setup.py test
 %doc doc/build/html/*
 
 %changelog
+* Wed Jul 29 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 0.3.7-6.2
+- Fix denial of service in Real type __float__() method
+  (CVE-2026-59886)
+- Resolves: RHEL-217908
+
 * Wed Feb 18 2026 Masahiro Matsuya <mmatsuya@redhat.com> - 0.3.7-6.el8_10.1
 - Resolves: RHEL-148145
 
