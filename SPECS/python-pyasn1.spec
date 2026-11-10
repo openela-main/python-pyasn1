@@ -2,14 +2,12 @@
 %global modules_version 0.4.2
 
 Name:           python-pyasn1
-Version:        0.6.2
-Release:        1%{?dist}.1
+Version:        0.6.4
+Release:        1%{?dist}
 Summary:        ASN.1 tools for Python
 License:        BSD-2-Clause
 Source0:        https://github.com/pyasn1/pyasn1/archive/v%{version}.tar.gz
 Source1:        https://github.com/pyasn1/pyasn1-modules/archive/v%{modules_version}.tar.gz
-# https://github.com/pyasn1/pyasn1/commit/e60c691cb91addb8fcefa2f537e85ede6fb1e886
-Patch0:         python-pyasn1-0.6.2-CVE-2026-59886.patch
 URL:            https://github.com/pyasn1/pyasn1
 BuildArch:      noarch
 
@@ -47,7 +45,6 @@ BuildRequires:  python3-sphinx
 
 %prep
 %setup -n %{module}-%{version} -q -b1
-%patch -P0 -p1
 
 
 %generate_buildrequires
@@ -89,10 +86,17 @@ popd
 %doc docs/build/html/*
 
 %changelog
-* Wed Jul 29 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 0.6.2-1.1
-- Fix CVE-2026-59886: prevent overflow in Real.__float__() when
-  converting ASN.1 Real values with large exponents
-  Resolves: RHEL-217904
+* Thu Jul 16 2026 Simon Pichugin <spichugi@redhat.com> - 0.6.4-1
+- Update to 0.6.4
+- Fixed quadratic complexity in OID/RELATIVE-OID decoders (CVE-2026-59885)
+- Limited BER/CER/DER long-form tag IDs to 20 octets (CVE-2026-59884)
+- Fixed excessive resource use in Real.__float__() (CVE-2026-59886)
+- Resolves: RHEL-211094
+
+* Fri Apr 24 2026 Simon Pichugin <spichugi@redhat.com> - 0.6.3-1
+- Update to 0.6.3
+- Added nesting depth limit to ASN.1 decoder (CVE-2026-30922)
+- Resolves: RHEL-170609
 
 * Wed Feb 11 2026 Florence Blanc-Renaud <flo@redhat.com> - 0.6.2-1
 - Update to 0.6.2
