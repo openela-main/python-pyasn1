@@ -1,20 +1,18 @@
 %global module pyasn1
-%global modules_version 0.2.8
+%global modules_version 0.4.2
 
 Name:           python-pyasn1
-Version:        0.4.8
-Release:        7%{?dist}.1
+Version:        0.6.4
+Release:        1%{?dist}
 Summary:        ASN.1 tools for Python
-License:        BSD
-Source0:        https://github.com/etingof/pyasn1/archive/v%{version}.tar.gz
-Source1:        https://github.com/etingof/pyasn1-modules/archive/v%{modules_version}.tar.gz
-URL:            http://pyasn1.sourceforge.net/
+License:        BSD-2-Clause
+Source0:        https://github.com/pyasn1/pyasn1/archive/v%{version}.tar.gz
+Source1:        https://github.com/pyasn1/pyasn1-modules/archive/v%{modules_version}.tar.gz
+URL:            https://github.com/pyasn1/pyasn1
 BuildArch:      noarch
-
-Patch1:         0001-Backport-commit-be353d7.patch
-# https://github.com/pyasn1/pyasn1/commit/e60c691cb91addb8fcefa2f537e85ede6fb1e886
-Patch2:         python-pyasn1-0.4.8-CVE-2026-59886.patch
-
+# Revert upstream migration to pyproject.toml [project] metadata (PR#90);
+# EL9 ships setuptools too old to handle it, producing an UNKNOWN-0.0.0 wheel.
+Patch0:         0001-Revert-Package-pyasn1-with-pyproject.toml-90.patch
 
 %description
 This is an implementation of ASN.1 types and codecs in the Python programming
@@ -60,7 +58,7 @@ pushd ../pyasn1-modules-%{modules_version}
 popd
 
 pushd docs
-PYTHONPATH=%{buildroot}%{python3_sitelib} make SPHINXBUILD=sphinx-build-3 html
+PYTHONPATH=.. make SPHINXBUILD=sphinx-build-3 html
 popd
 
 
@@ -73,7 +71,8 @@ popd
 
 
 %check
-PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} setup.py test
+cd %{_builddir}/%{module}-%{version}
+PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} -m tests
 
 
 %files -n python3-pyasn1
@@ -91,9 +90,19 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} setup.py test
 %doc docs/build/html/*
 
 %changelog
-* Wed Jul 29 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 0.4.8-7.1
-- Fix CVE-2026-59886: prevent overflow in Real type float conversion
-- Resolves: RHEL-217915
+* Thu Jul 16 2026 Simon Pichugin <spichugi@redhat.com> - 0.6.4-1
+- Update to 0.6.4
+- Fixed quadratic complexity in OID/RELATIVE-OID decoders (CVE-2026-59885)
+- Limited BER/CER/DER long-form tag IDs to 20 octets (CVE-2026-59884)
+- Fixed excessive resource use in Real.__float__() (CVE-2026-59886)
+- Resolves: RHEL-211094
+
+* Fri Apr 24 2026 Simon Pichugin <spichugi@redhat.com> - 0.6.3-1
+- Update to 0.6.3
+- Update License to BSD-2-Clause to match upstream SPDX identifier
+- Added nesting depth limit to ASN.1 decoder (CVE-2026-30922)
+- Fixed continuation octet limits in OID/RELATIVE-OID decoder (CVE-2026-23490)
+- Resolves: RHEL-170862
 
 * Fri Feb 13 2026 Florence Blanc-Renaud <flo@redhat.com> - 0.4.8-7
 - Resolves: RHEL-148154

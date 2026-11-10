@@ -1,0 +1,158 @@
+From 66bcd08ebf586742ca3dd857ec29f490eac2b242 Mon Sep 17 00:00:00 2001
+From: Simon Pichugin <spichugi@redhat.com>
+Date: Mon, 27 Apr 2026 20:34:28 -0700
+Subject: [PATCH] Revert "Package pyasn1 with pyproject.toml (#90)"
+
+This reverts commit d2015ad04336944511ce7643914e8daf432ef2f9.
+
+It's a modified patch because the release tarball already contains a setup.cfg
+with [egg_info] content; this patch prepends the full [metadata] and [options]
+sections so that EL9's older setuptools can read the package name/version correctly
+and produce a properly-named wheel instead of UNKNOWN-0.0.0.
+---
+
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -4,68 +4,3 @@
+ ]
+ build-backend = "setuptools.build_meta"
+ 
+-[project]
+-name = "pyasn1"
+-license.text = "BSD-2-Clause"  # Replace with 'license' once Python 3.8 is dropped
+-description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
+-readme = "README.md"
+-authors = [
+-    {name = "Ilya Etingof", email = "etingof@gmail.com"}
+-]
+-maintainers = [
+-    {name = "pyasn1 maintenance organization"},
+-    {name = "Christian Heimes", email = "christian@python.org"}
+-]
+-requires-python = ">=3.8"
+-classifiers = [
+-    "Development Status :: 5 - Production/Stable",
+-    "Environment :: Console",
+-    "Intended Audience :: Developers",
+-    "Intended Audience :: Education",
+-    "Intended Audience :: Information Technology",
+-    "Intended Audience :: System Administrators",
+-    "Intended Audience :: Telecommunications Industry",
+-    "Natural Language :: English",
+-    "Operating System :: OS Independent",
+-    "Programming Language :: Python :: 3",
+-    "Programming Language :: Python :: 3.8",
+-    "Programming Language :: Python :: 3.9",
+-    "Programming Language :: Python :: 3.10",
+-    "Programming Language :: Python :: 3.11",
+-    "Programming Language :: Python :: 3.12",
+-    "Programming Language :: Python :: 3.13",
+-    "Programming Language :: Python :: 3.14",
+-    "Programming Language :: Python :: Implementation :: CPython",
+-    "Programming Language :: Python :: Implementation :: PyPy",
+-    "Topic :: Communications",
+-    "Topic :: Software Development :: Libraries :: Python Modules"
+-]
+-dynamic = ["version"]
+-
+-[project.urls]
+-"Homepage" = "https://github.com/pyasn1/pyasn1"
+-"Documentation" = "https://pyasn1.readthedocs.io"
+-"Source" = "https://github.com/pyasn1/pyasn1"
+-"Issues" = "https://github.com/pyasn1/pyasn1/issues"
+-"Changelog" = "https://pyasn1.readthedocs.io/en/latest/changelog.html"
+-
+-[tool.setuptools]
+-zip-safe = true
+-platforms = ["any"]
+-# Additional files to include in the distribution (replaces MANIFEST.in functionality)
+-include-package-data = true
+-license-files = ["LICENSE.rst"]  # Replace with 'project.license-files' once Python 3.8 is dropped
+-
+-[tool.setuptools.dynamic]
+-version = {attr = "pyasn1.__version__"}
+-
+-[tool.setuptools.packages.find]
+-include = [
+-    "pyasn1*"
+-]
+-
+-[tool.setuptools.package-data]
+-"*" = [
+-    "*.rst",
+-    "*.md"
+-]
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -0,0 +1,56 @@
++[metadata]
++name = pyasn1
++version = attr: pyasn1.__version__
++description = Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)
++long_description = file: README.md
++long_description_content_type = text/markdown
++license = BSD-2-Clause
++license_files = LICENSE.rst
++url = https://github.com/pyasn1/pyasn1
++author = Ilya Etingof
++author_email = etingof@gmail.com
++maintainer = pyasn1 maintenance organization
++maintainer_email = Christian Heimes <christian@python.org>
++project_urls =
++    Documentation=https://pyasn1.readthedocs.io
++    Source=https://github.com/pyasn1/pyasn1
++    Issues=https://github.com/pyasn1/pyasn1/issues
++    Changelog=https://pyasn1.readthedocs.io/en/latest/changelog.html
++platforms = any
++classifiers =
++    Development Status :: 5 - Production/Stable
++    Environment :: Console
++    Intended Audience :: Developers
++    Intended Audience :: Education
++    Intended Audience :: Information Technology
++    Intended Audience :: System Administrators
++    Intended Audience :: Telecommunications Industry
++    License :: OSI Approved :: BSD License
++    Natural Language :: English
++    Operating System :: OS Independent
++    Programming Language :: Python :: 3
++    Programming Language :: Python :: 3.8
++    Programming Language :: Python :: 3.9
++    Programming Language :: Python :: 3.10
++    Programming Language :: Python :: 3.11
++    Programming Language :: Python :: 3.12
++    Programming Language :: Python :: 3.13
++    Programming Language :: Python :: Implementation :: CPython
++    Programming Language :: Python :: Implementation :: PyPy
++    Topic :: Communications
++    Topic :: Software Development :: Libraries :: Python Modules
++
++[options]
++python_requires = >=3.8
++zip_safe = True
++setup_requires = setuptools
++packages =
++    pyasn1
++    pyasn1.type
++    pyasn1.compat
++    pyasn1.codec
++    pyasn1.codec.ber
++    pyasn1.codec.cer
++    pyasn1.codec.der
++    pyasn1.codec.native
++
+--- a/setup.py
++++ b/setup.py
+@@ -0,0 +1,10 @@
++#!/usr/bin/env python
++#
++# This file is part of pyasn1 software.
++#
++# Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
++# License: https://pyasn1.readthedocs.io/en/latest/license.html
++#
++from setuptools import setup
++
++setup()
+-- 
+2.52.0
